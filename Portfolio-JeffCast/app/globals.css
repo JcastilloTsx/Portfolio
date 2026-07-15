@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens ──────────────────────────────────────────── */
+:root {
+  --color-bg: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-text: #0d0d0d;
+  --color-muted: #6b7280;
+  --color-accent: #1a56db;
+  --color-olive: #5c6e2e;
+}
+
+/* ─── Dark mode tokens ───────────────────────────────────────── */
+.dark {
+  --color-bg: #111111;
+  --color-surface: #1c1c1c;
+  --color-text: #f0f0ee;
+  --color-muted: #9ca3af;
+  --color-accent: #4b9eff;
+  --color-olive: #8fae3e;
+}
+
+/* ─── Base resets ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Focus ring (visible, branded) ─────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── Animation keyframes ────────────────────────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes orb-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-40px, 25px) scale(1.07); }
+  66%      { transform: translate(25px, -30px) scale(0.94); }
+}
+
+@keyframes orb-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%      { transform: translate(35px, -20px) scale(1.05); }
+  75%      { transform: translate(-20px, 30px) scale(0.96); }
+}
+
+@keyframes marquee-forward {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ─── Hero fade-up: show immediately for reduced-motion ─────── */
+.animate-fade-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-up {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fade-up 0.5s ease forwards;
+  }
+}
+
+/* ─── Scroll-reveal (FadeIn component) ──────────────────────── */
+.fade-in-element {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in-element {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .fade-in-element.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Hero orbs ──────────────────────────────────────────────── */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.hero-orb-1 {
+  width: 560px;
+  height: 560px;
+  top: -120px;
+  right: -80px;
+  background: var(--color-accent);
+  opacity: 0.07;
+}
+
+.hero-orb-2 {
+  width: 440px;
+  height: 440px;
+  bottom: -80px;
+  left: -60px;
+  background: var(--color-olive);
+  opacity: 0.07;
+}
+
+.hero-orb-3 {
+  width: 280px;
+  height: 280px;
+  top: 40%;
+  left: 40%;
+  background: var(--color-accent);
+  opacity: 0.035;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-orb-1 { animation: orb-float-1 14s ease-in-out infinite; }
+  .hero-orb-2 { animation: orb-float-2 18s ease-in-out infinite; }
+  .hero-orb-3 { animation: orb-float-1 22s ease-in-out infinite reverse; }
+}
+
+/* ─── Tech marquee rows ─────────────────────────────────────── */
+.marquee-forward {
+  animation: marquee-forward var(--marquee-speed, 45s) linear infinite;
+}
+
+.marquee-reverse {
+  animation: marquee-reverse var(--marquee-speed, 55s) linear infinite;
+}
+
+.marquee-forward:hover,
+.marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+
+
