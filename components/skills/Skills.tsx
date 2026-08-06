@@ -7,8 +7,9 @@ import {
   SiRubyonrails, SiCypress, SiMongodb, SiTurborepo,
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
-import { skillGroups, courses } from '@/lib/content'
+import { skillGroups } from '@/lib/content'
 import TechMarquee from './TechMarquee'
+import CoursesCarousel from './CoursesCarousel'
 
 const SKILL_ICONS: Record<string, IconType> = {
   'React 18+':                    SiReact,
@@ -29,108 +30,95 @@ const SKILL_ICONS: Record<string, IconType> = {
   'Turborepo / Nx':               SiTurborepo,
 }
 
-const levelColors = {
-  Expert: {
-    label: 'text-[var(--color-olive)]',
-    pill: 'bg-olive/10 text-[var(--color-olive)] dark:bg-olive/20',
-    dot: 'bg-[var(--color-olive)]',
-  },
-  Proficient: {
-    label: 'text-accent',
-    pill: 'bg-accent/10 text-accent dark:bg-accent/20',
-    dot: 'bg-accent',
-  },
-  Familiar: {
-    label: 'text-muted',
-    pill: 'bg-black/5 text-text dark:bg-white/10',
-    dot: 'bg-muted',
-  },
-} as const
+const LEVEL_METER: Record<string, { fill: number; color: string }> = {
+  Expert:     { fill: 10, color: 'bg-olive' },
+  Proficient: { fill: 7,  color: 'bg-accent' },
+  Familiar:   { fill: 4,  color: 'bg-muted' },
+}
+
+const LEVEL_TEXT: Record<string, string> = {
+  Expert: 'text-olive',
+  Proficient: 'text-accent',
+  Familiar: 'text-muted',
+}
+
+function LevelMeter({ level }: { level: string }) {
+  const cfg = LEVEL_METER[level]
+  return (
+    <div className="flex gap-[3px]" role="img" aria-label={`${level} — ${cfg.fill}/10`}>
+      {Array.from({ length: 10 }, (_, i) => (
+        <span
+          key={i}
+          className={`h-3 w-2 border border-line ${i < cfg.fill ? cfg.color : 'bg-transparent'}`}
+          aria-hidden="true"
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function Skills() {
   return (
     <section
       id="skills"
       aria-labelledby="skills-heading"
-      className="border-t border-black/5 py-24 dark:border-white/10 lg:py-32"
+      className="border-t-2 border-line py-24 lg:py-32"
     >
       <div className="mx-auto max-w-5xl px-6">
         <header className="mb-12">
-          <p className="mb-3 font-body text-xs uppercase tracking-widest text-muted">
-            03
+          <p className="mb-3 font-body text-xs text-muted">
+            <span className="text-accent">$</span> inventory --list
           </p>
           <h2
             id="skills-heading"
-            className="font-display text-3xl font-bold text-text sm:text-4xl"
+            className="font-display text-4xl font-bold text-text sm:text-5xl"
           >
             Skills
           </h2>
           <p className="mt-3 font-body text-sm text-muted">
-            Grouped by honest depth — no progress bars.
+            Meters read honest depth, not marketing — no skill is padded to look fuller than it is.
           </p>
         </header>
 
         {/* ── Scrolling tech ticker ────────────────────────── */}
         <TechMarquee />
 
-        {/* ── Grouped skill pills with icons ───────────────── */}
-        <div className="space-y-12">
-          {skillGroups.map((group) => {
-            const cfg = levelColors[group.level]
-            return (
-              <div key={group.level}>
-                <div className="mb-4 flex items-center gap-3">
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full ${cfg.dot}`}
-                    aria-hidden="true"
-                  />
-                  <h3
-                    className={`font-display text-[10px] font-semibold uppercase tracking-[0.14em] ${cfg.label}`}
-                  >
-                    {group.level}
-                  </h3>
-                </div>
-                <div className="flex flex-wrap gap-2" role="list">
-                  {group.skills.map((skill) => {
-                    const Icon = SKILL_ICONS[skill]
-                    return (
-                      <span
-                        key={skill}
-                        role="listitem"
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-body text-sm font-medium transition-opacity hover:opacity-75 ${cfg.pill}`}
-                      >
-                        {Icon && (
-                          <Icon size={13} aria-hidden="true" className="shrink-0" />
-                        )}
-                        {skill}
-                      </span>
-                    )
-                  })}
-                </div>
+        {/* ── Grouped skill tags with level meters ─────────── */}
+        <div className="space-y-10">
+          {skillGroups.map((group) => (
+            <div key={group.level} className="border border-line">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
+                <h3
+                  className={`font-display text-base uppercase tracking-[0.14em] ${LEVEL_TEXT[group.level]}`}
+                >
+                  {group.level}
+                </h3>
+                <LevelMeter level={group.level} />
               </div>
-            )
-          })}
+              <div className="flex flex-wrap gap-2 p-4" role="list">
+                {group.skills.map((skill) => {
+                  const Icon = SKILL_ICONS[skill]
+                  return (
+                    <span
+                      key={skill}
+                      role="listitem"
+                      className="inline-flex items-center gap-1.5 border border-line px-3 py-1.5 font-display text-base text-text transition-transform duration-150 hover:-translate-y-0.5 hover:border-accent"
+                    >
+                      {Icon && (
+                        <Icon size={13} aria-hidden="true" className="shrink-0" />
+                      )}
+                      {skill}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* ── Courses ─────────────────────────────────────── */}
-        <div className="mt-16 border-t border-black/5 pt-12 dark:border-white/10">
-          <h3 className="mb-5 font-display text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
-            Courses &amp; Continuing Education
-          </h3>
-          <ul className="grid grid-cols-1 gap-y-2 sm:grid-cols-2" role="list">
-            {courses.map((course) => (
-              <li
-                key={course}
-                className="flex items-start gap-2.5 font-body text-sm text-muted"
-              >
-                <span
-                  className="mt-2 h-1 w-1 shrink-0 rounded-full bg-muted"
-                  aria-hidden="true"
-                />
-                {course}
-              </li>
-            ))}
-          </ul>
+        <div className="mt-16 border-t-2 border-line pt-12">
+          <CoursesCarousel />
         </div>
       </div>
     </section>

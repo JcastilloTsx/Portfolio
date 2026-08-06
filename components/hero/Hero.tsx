@@ -1,4 +1,5 @@
-import Image from 'next/image'
+import ScanlineGrid from '@/components/ui/ScanlineGrid'
+import AsciiGlobe from '@/components/hero/AsciiGlobe'
 import { person } from '@/lib/content'
 
 export default function Hero() {
@@ -6,99 +7,113 @@ export default function Hero() {
     <section
       id="hero"
       aria-label="Introduction"
-      className="relative flex min-h-screen items-center overflow-hidden pt-14"
+      className="relative flex min-h-screen items-center overflow-hidden pt-12"
     >
-      {/* ── Animated ambient orbs ─────────────────────────────── */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="hero-orb hero-orb-1" />
-        <div className="hero-orb hero-orb-2" />
-        <div className="hero-orb hero-orb-3" />
-      </div>
+      <ScanlineGrid className="absolute inset-0" />
 
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 lg:py-0">
-        <div className="lg:grid lg:grid-cols-[1fr_300px] lg:items-center lg:gap-20">
+      <div className="relative mx-auto w-full max-w-6xl px-6 py-20 lg:py-0">
+        <div className="lg:grid lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-10 xl:gap-16">
 
-          {/* ── Text column ───────────────────────────────────── */}
+          {/* ── Boot log ──────────────────────────────────────── */}
           <div>
-            {/* Mobile photo — small circle above the name */}
-            <div className="mb-8 lg:hidden">
-              <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-accent/25 shadow-md">
-                <Image
-                  src="/jeffrey-castillo.jpg"
-                  alt="Jeffrey Castillo"
-                  fill
-                  sizes="64px"
-                  className="object-cover object-top"
-                  unoptimized
-                />
+            <div className="border-2 border-line bg-surface p-5 sm:p-7 xl:p-9">
+              <div className="mb-4 flex items-center gap-2 border-b-2 border-line pb-3">
+                <span className="h-2.5 w-2.5 bg-danger" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 bg-accent" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 bg-olive" aria-hidden="true" />
+                <span className="ml-2 text-[11px] uppercase tracking-widest text-muted">
+                  boot_sequence.log
+                </span>
               </div>
+
+              <p className="mb-1 font-body text-xs text-muted sm:text-sm">
+                <span className="text-accent">&gt;</span> whoami
+              </p>
+              <h1 className="type-line mb-4 font-display text-4xl font-bold leading-none text-text sm:text-6xl lg:text-6xl xl:text-7xl">
+                <span
+                  style={{
+                    '--type-steps': person.name.length,
+                    '--type-width': `${person.name.length}ch`,
+                    '--type-delay': '0.1s',
+                  } as React.CSSProperties}
+                >
+                  {person.name}
+                </span>
+              </h1>
+
+              <p className="mb-1 font-body text-xs text-muted sm:text-sm">
+                <span className="text-accent">&gt;</span> role --current
+              </p>
+              <p
+                className="animate-fade-up mb-4 font-body text-lg font-semibold text-accent sm:text-xl xl:text-2xl"
+                style={{ animationDelay: '0.7s' }}
+              >
+                {person.title}
+              </p>
+
+              <p className="mb-1 font-body text-xs text-muted sm:text-sm">
+                <span className="text-accent">&gt;</span> status
+              </p>
+              <p
+                className="animate-fade-up mb-1 font-body text-sm leading-relaxed text-text sm:text-base xl:text-lg"
+                style={{ animationDelay: '1.1s' }}
+              >
+                [<span className="text-olive">ONLINE</span>] {person.availability} — {person.location} · {person.timezone}
+              </p>
+
+              <p className="mt-4 font-body text-sm text-muted sm:text-base">
+                <span className="text-accent">&gt;</span>
+                <span className="caret" aria-hidden="true" />
+              </p>
             </div>
 
-            <p
-              className="animate-fade-up mb-6 font-body text-xs uppercase tracking-widest text-muted"
-              style={{ animationDelay: '0ms' }}
-            >
-              {person.location} · {person.timezone} ·{' '}
-              <span className="text-accent">{person.availability}</span>
-            </p>
-
-            <h1
-              className="animate-fade-up mb-6 font-display text-5xl font-bold leading-[1.02] text-text sm:text-6xl lg:text-7xl"
-              style={{ animationDelay: '80ms' }}
-            >
-              Jeffrey
-              <br />
-              Castillo
-            </h1>
-
-            <p
-              className="animate-fade-up mb-10 max-w-md font-body text-lg leading-relaxed text-muted sm:text-xl"
-              style={{ animationDelay: '160ms' }}
-            >
-              {person.positioning}
-            </p>
-
-            <div
-              className="animate-fade-up flex flex-wrap gap-3"
-              style={{ animationDelay: '240ms' }}
-            >
+            <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href={`mailto:${person.email}`}
-                className="inline-flex items-center gap-2 rounded bg-accent px-6 py-3 font-display text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#1344b8] dark:hover:bg-[#2d6fe8]"
+                className="inline-flex items-center gap-2 border-2 border-text bg-accent px-5 py-3 font-display text-lg text-bg shadow-[3px_3px_0_var(--color-text)] transition-transform duration-150 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-text)]"
               >
-                Get in touch
-                <span aria-hidden="true">→</span>
+                $ mail --compose
               </a>
               <a
                 href="/jeffrey-castillo-cv.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded border border-black/15 px-6 py-3 font-display text-sm font-semibold text-text transition-colors duration-150 hover:border-black/30 dark:border-white/15 dark:hover:border-white/30"
+                className="inline-flex items-center gap-2 border-2 border-line px-5 py-3 font-display text-lg text-text transition-colors duration-150 hover:border-accent hover:text-accent"
               >
-                View CV
-                <span aria-hidden="true">↗</span>
+                $ cat resume.pdf
               </a>
             </div>
           </div>
 
-          {/* ── Desktop photo ─────────────────────────────────── */}
-          <div className="relative hidden lg:flex lg:justify-center">
-            {/* Gradient border frame */}
-            <div className="rounded-[1.15rem] bg-gradient-to-br from-accent/30 via-transparent to-[var(--color-olive)]/30 p-[1.5px]">
-            <div
-              className="relative overflow-hidden rounded-2xl shadow-2xl"
-              style={{ width: 280, height: 340 }}
-            >
-              <Image
-                src="/jeffrey-castillo.jpg"
-                alt="Jeffrey Castillo"
-                fill
-                sizes="280px"
-                className="object-cover object-top"
-                priority
-                unoptimized
-              />
-            </div>
+          {/* ── Ascii viewport ────────────────────────────────── */}
+          <div className="relative mt-10 lg:mt-0">
+            <div className="relative border-2 border-line bg-surface">
+              <div className="flex items-center gap-2 border-b-2 border-line px-4 py-3">
+                <span className="h-2.5 w-2.5 bg-danger" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 bg-accent" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 bg-olive" aria-hidden="true" />
+                <span className="ml-2 text-[11px] uppercase tracking-widest text-muted">
+                  global_net.render
+                </span>
+              </div>
+
+              <div className="relative flex items-center justify-center overflow-hidden px-6 py-12 sm:py-16 lg:py-20 xl:py-24">
+                <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-accent" aria-hidden="true" />
+                <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-accent" aria-hidden="true" />
+                <span className="pointer-events-none absolute bottom-3 left-3 h-5 w-5 border-b-2 border-l-2 border-accent" aria-hidden="true" />
+                <span className="pointer-events-none absolute bottom-3 right-3 h-5 w-5 border-b-2 border-r-2 border-accent" aria-hidden="true" />
+
+                <AsciiGlobe className="w-full text-[5px] sm:text-[6px] lg:text-[6.5px] xl:text-[8px]" />
+              </div>
+
+              <div className="flex items-center justify-between border-t-2 border-line px-4 py-2">
+                <span className="font-display text-base text-olive">
+                  [LIVE] rotating_wireframe.tsx
+                </span>
+                <span className="hidden font-body text-[10px] uppercase tracking-widest text-muted sm:inline">
+                  realtime · 60fps
+                </span>
+              </div>
             </div>
           </div>
         </div>
