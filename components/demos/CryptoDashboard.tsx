@@ -224,13 +224,15 @@ function Sparkline({ data, positive }: { data: number[]; positive: boolean }) {
   )
 }
 
-function CoinCard({ coin, onOpen }: { coin: CryptoData; onOpen: (coin: CryptoData) => void }) {
+function CoinCard({ coin, onOpen }: { coin: CryptoData; onOpen: (coin: CryptoData, button: HTMLButtonElement | null) => void }) {
   const positive = coin.price_change_percentage_24h >= 0
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
 
   return (
     <button
       type="button"
-      onClick={() => onOpen(coin)}
+      ref={buttonRef}
+      onClick={() => onOpen(coin, buttonRef.current)}
       className="w-full border-2 border-line bg-surface p-4 text-left transition-colors hover:border-accent"
     >
       <div className="mb-3 flex items-center justify-between">
@@ -548,7 +550,28 @@ export default function CryptoDashboard() {
   const [loading, setLoading] = useState(true)
   const [notice, setNotice] = useState<string | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [activeCoin, setActiveCoin] = useState<CryptoData | null>(null)
+  const [activeCoin, setActiveCoin] = useState<{ coin: CryptoData; trigger: HTMLButtonElement | null } | null>(null)
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const updateScrollButtons = useCallback(() => {
+    const track = trackRef.current
+    if (!track) return
+    setCanScrollLeft(track.scrollLeft > 0)
+    setCanScrollRight(track.scrollLeft + track.clientWidth < track.scrollWidth - 1)
+  }, [])
+
+  const scrollCards = (distance: number) => {
+    trackRef.current?.scrollBy({ left: distance, behavior: 'smooth' })
+  }
+
+  const closeCoinModal = useCallback(() => {
+    setActiveCoin((current) => {
+      current?.trigger?.focus()
+      return null
+    })
+  }, [])
 
   const fetchCoins = useCallback(async () => {
     try {
@@ -585,6 +608,18 @@ export default function CryptoDashboard() {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
+  useEffect(() => {
+    updateScrollButtons()
+    const track = trackRef.current
+    if (!track) return
+    track.addEventListener('scroll', updateScrollButtons)
+    window.addEventListener('resize', updateScrollButtons)
+    return () => {
+      track.removeEventListener('scroll', updateScrollButtons)
+      window.removeEventListener('resize', updateScrollButtons)
+    }
+  }, [updateScrollButtons, coins])
+
   function addCoin(coin: CryptoData) {
     if (!ids.includes(coin.id)) setIds((prev) => [...prev, coin.id])
     setCoins((prev) => (prev.some((c) => c.id === coin.id) ? prev : [...prev, coin]))
@@ -616,16 +651,47 @@ export default function CryptoDashboard() {
         {loading ? (
           <p className="p-8 text-center font-body text-sm text-muted">loading market data...</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {coins.map((coin) => (
-              <CoinCard key={coin.id} coin={coin} onOpen={setActiveCoin} />
-            ))}
+          <div className="relative">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="font-body text-xs uppercase tracking-widest text-muted">scroll coins →</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => scrollCards(-320)}
+                  disabled={!canScrollLeft}
+                  className="border border-line px-2 py-1 font-display text-base text-text transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                >
+                  {'<'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollCards(320)}
+                  disabled={!canScrollRight}
+                  className="border border-line px-2 py-1 font-display text-base text-text transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                >
+                  {'>'}
+                </button>
+              </div>
+            </div>
+            <div
+              ref={trackRef}
+              className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth"
+            >
+              {coins.map((coin) => (
+                <div key={coin.id} className="min-w-[280px] max-w-[320px] shrink-0 snap-center">
+                  <CoinCard
+                    coin={coin}
+                    onOpen={(coinData, trigger) => setActiveCoin({ coin: coinData, trigger })}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
       {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} onAdd={addCoin} />}
-      {activeCoin && <CoinDetailModal coin={activeCoin} onClose={() => setActiveCoin(null)} />}
+      {activeCoin && <CoinDetailModal coin={activeCoin.coin} onClose={closeCoinModal} />}
     </div>
   )
 }

@@ -189,6 +189,15 @@ body {
     );
 }
 
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .scanline-grid.is-live {
     animation: scan-drift 0.5s linear infinite;
