@@ -38,9 +38,9 @@ export interface PersonData {
 
 export const person: PersonData = {
   name: 'Jeffrey Castillo',
-  title: 'Senior Frontend Developer',
+  title: 'Full-Stack Developer',
   positioning:
-    'Senior Frontend Engineer — React, TypeScript, Next.js — I ship enterprise apps solo, end to end.',
+    'Full-Stack Engineer — React/TypeScript/Next.js frontends, Node.js/.NET backends, real-time and integration layers — I ship and operate enterprise systems solo, end to end.',
   location: 'Mexico',
   timezone: 'UTC',
   availability: 'Open to remote / contract (US)',

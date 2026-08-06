@@ -20,39 +20,39 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="flex h-8 w-8 items-center justify-center rounded text-muted transition-colors hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+      aria-label={dark ? 'Switch to light (paper) mode' : 'Switch to dark (CRT) mode'}
+      className="flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
     >
       {dark ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
           aria-hidden="true"
         >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+          <rect x="8" y="8" width="8" height="8" />
+          <path d="M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2" />
         </svg>
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
           aria-hidden="true"
         >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          <path d="M20 14a8 6 0 1 1-10-10 6 6 0 0 0 10 10z" />
         </svg>
       )}
     </button>

@@ -71,7 +71,7 @@ function MarqueeRow({
         {doubled.map((tech, i) => (
           <div
             key={i}
-            className="flex items-center gap-2 rounded-lg border border-black/8 bg-surface px-3.5 py-2 dark:border-white/8"
+            className="flex items-center gap-2 border border-line bg-surface px-3.5 py-2"
           >
             <tech.Icon
               size={16}
@@ -79,7 +79,7 @@ function MarqueeRow({
               className={tech.color === 'currentColor' ? 'text-text' : ''}
               aria-hidden="true"
             />
-            <span className="whitespace-nowrap font-body text-xs font-medium text-text">
+            <span className="whitespace-nowrap font-display text-base text-text">
               {tech.name}
             </span>
           </div>

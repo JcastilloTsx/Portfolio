@@ -62,20 +62,27 @@ export default function Contact() {
     setErrors({})
   }
 
+  const inputClass = (hasError: boolean) =>
+    `w-full border-2 bg-bg px-4 py-3 font-body text-sm text-text placeholder:text-muted/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+      hasError
+        ? 'border-danger'
+        : 'border-line hover:border-accent'
+    }`
+
   return (
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="border-t border-black/5 py-24 dark:border-white/10 lg:py-32"
+      className="border-t-2 border-line py-24 lg:py-32"
     >
       <div className="mx-auto max-w-5xl px-6">
         <header className="mb-16">
-          <p className="mb-3 font-body text-xs uppercase tracking-widest text-muted">
-            04
+          <p className="mb-3 font-body text-xs text-muted">
+            <span className="text-accent">$</span> contact --init
           </p>
           <h2
             id="contact-heading"
-            className="font-display text-3xl font-bold text-text sm:text-4xl"
+            className="font-display text-4xl font-bold text-text sm:text-5xl"
           >
             Contact
           </h2>
@@ -94,8 +101,8 @@ export default function Contact() {
                   href={`mailto:${person.email}`}
                   className="group inline-flex items-baseline gap-4 text-text transition-colors duration-150 hover:text-accent"
                 >
-                  <span className="w-16 shrink-0 font-display text-[10px] font-semibold uppercase tracking-widest text-muted">
-                    Email
+                  <span className="w-20 shrink-0 font-body text-[11px] font-semibold uppercase tracking-widest text-muted">
+                    email:
                   </span>
                   <span className="font-body text-sm font-medium group-hover:underline underline-offset-4">
                     {person.email}
@@ -109,8 +116,8 @@ export default function Contact() {
                   rel="noopener noreferrer"
                   className="group inline-flex items-baseline gap-4 text-text transition-colors duration-150 hover:text-accent"
                 >
-                  <span className="w-16 shrink-0 font-display text-[10px] font-semibold uppercase tracking-widest text-muted">
-                    LinkedIn
+                  <span className="w-20 shrink-0 font-body text-[11px] font-semibold uppercase tracking-widest text-muted">
+                    linkedin:
                   </span>
                   <span className="font-body text-sm font-medium group-hover:underline underline-offset-4">
                     jeffrey-valeriano-castillo-nuñez
@@ -124,8 +131,8 @@ export default function Contact() {
                   rel="noopener noreferrer"
                   className="group inline-flex items-baseline gap-4 text-text transition-colors duration-150 hover:text-accent"
                 >
-                  <span className="w-16 shrink-0 font-display text-[10px] font-semibold uppercase tracking-widest text-muted">
-                    GitHub
+                  <span className="w-20 shrink-0 font-body text-[11px] font-semibold uppercase tracking-widest text-muted">
+                    github:
                   </span>
                   <span className="font-body text-sm font-medium group-hover:underline underline-offset-4">
                     JcastilloTsx
@@ -141,30 +148,30 @@ export default function Contact() {
               <div
                 role="status"
                 aria-live="polite"
-                className="rounded border border-black/10 bg-surface p-6 dark:border-white/10"
+                className="border-2 border-olive bg-surface p-6"
               >
-                <p className="mb-2 font-display font-semibold text-text">
-                  Your email client is open.
+                <p className="mb-2 font-display text-xl text-text">
+                  [OK] Your email client is open.
                 </p>
                 <p className="mb-4 font-body text-sm text-muted">
                   The message has been pre-filled — hit send when ready.
                 </p>
                 <button
                   onClick={() => setState('idle')}
-                  className="font-body text-sm text-accent hover:underline underline-offset-4"
+                  className="font-display text-lg text-accent hover:underline underline-offset-4"
                 >
-                  Send another message
+                  $ compose --new
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5 border-2 border-line bg-surface p-6">
                 {/* Name */}
                 <div>
                   <label
                     htmlFor="contact-name"
-                    className="mb-2 block font-display text-[10px] font-semibold uppercase tracking-widest text-muted"
+                    className="mb-2 block font-body text-[11px] font-semibold uppercase tracking-widest text-muted"
                   >
-                    Name
+                    name&gt;
                   </label>
                   <input
                     id="contact-name"
@@ -175,20 +182,16 @@ export default function Contact() {
                     onChange={handleChange}
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? 'name-error' : undefined}
-                    placeholder="Your name"
-                    className={`w-full rounded border px-4 py-3 font-body text-sm text-text placeholder:text-muted/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                      errors.name
-                        ? 'border-red-400 bg-red-50 dark:bg-red-950/20'
-                        : 'border-black/10 bg-surface hover:border-black/20 dark:border-white/10 dark:hover:border-white/20'
-                    }`}
+                    placeholder="your_name"
+                    className={inputClass(!!errors.name)}
                   />
                   {errors.name && (
                     <p
                       id="name-error"
                       role="alert"
-                      className="mt-1.5 font-body text-xs text-red-500"
+                      className="mt-1.5 font-body text-xs text-danger"
                     >
-                      {errors.name}
+                      [ERR] {errors.name}
                     </p>
                   )}
                 </div>
@@ -197,9 +200,9 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="contact-email"
-                    className="mb-2 block font-display text-[10px] font-semibold uppercase tracking-widest text-muted"
+                    className="mb-2 block font-body text-[11px] font-semibold uppercase tracking-widest text-muted"
                   >
-                    Email
+                    email&gt;
                   </label>
                   <input
                     id="contact-email"
@@ -211,19 +214,15 @@ export default function Contact() {
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? 'email-error' : undefined}
                     placeholder="you@company.com"
-                    className={`w-full rounded border px-4 py-3 font-body text-sm text-text placeholder:text-muted/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                      errors.email
-                        ? 'border-red-400 bg-red-50 dark:bg-red-950/20'
-                        : 'border-black/10 bg-surface hover:border-black/20 dark:border-white/10 dark:hover:border-white/20'
-                    }`}
+                    className={inputClass(!!errors.email)}
                   />
                   {errors.email && (
                     <p
                       id="email-error"
                       role="alert"
-                      className="mt-1.5 font-body text-xs text-red-500"
+                      className="mt-1.5 font-body text-xs text-danger"
                     >
-                      {errors.email}
+                      [ERR] {errors.email}
                     </p>
                   )}
                 </div>
@@ -232,9 +231,9 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="contact-message"
-                    className="mb-2 block font-display text-[10px] font-semibold uppercase tracking-widest text-muted"
+                    className="mb-2 block font-body text-[11px] font-semibold uppercase tracking-widest text-muted"
                   >
-                    Message
+                    message&gt;
                   </label>
                   <textarea
                     id="contact-message"
@@ -245,19 +244,15 @@ export default function Contact() {
                     aria-invalid={!!errors.message}
                     aria-describedby={errors.message ? 'message-error' : undefined}
                     placeholder="What's the project? What role are you hiring for?"
-                    className={`w-full resize-none rounded border px-4 py-3 font-body text-sm text-text placeholder:text-muted/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                      errors.message
-                        ? 'border-red-400 bg-red-50 dark:bg-red-950/20'
-                        : 'border-black/10 bg-surface hover:border-black/20 dark:border-white/10 dark:hover:border-white/20'
-                    }`}
+                    className={`resize-none ${inputClass(!!errors.message)}`}
                   />
                   {errors.message && (
                     <p
                       id="message-error"
                       role="alert"
-                      className="mt-1.5 font-body text-xs text-red-500"
+                      className="mt-1.5 font-body text-xs text-danger"
                     >
-                      {errors.message}
+                      [ERR] {errors.message}
                     </p>
                   )}
                 </div>
@@ -265,9 +260,9 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={state === 'validating'}
-                  className="w-full rounded bg-accent px-6 py-3 font-display text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#1344b8] disabled:opacity-60"
+                  className="w-full border-2 border-text bg-accent px-6 py-3 font-display text-lg text-bg shadow-[3px_3px_0_var(--color-text)] transition-transform duration-150 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-text)] disabled:pointer-events-none disabled:opacity-60"
                 >
-                  Open email client
+                  [ENTER] send_message.sh
                 </button>
 
                 <p className="text-center font-body text-xs text-muted">

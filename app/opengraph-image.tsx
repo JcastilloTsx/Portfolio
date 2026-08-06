@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const alt = 'Jeffrey Castillo — Senior Frontend Developer'
+export const alt = 'Jeffrey Castillo — Full-Stack Developer'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -10,7 +10,7 @@ export default function OGImage() {
     (
       <div
         style={{
-          background: '#f7f7f5',
+          background: '#0b0d0a',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -18,25 +18,23 @@ export default function OGImage() {
           alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '80px 96px',
-          fontFamily: 'system-ui, sans-serif',
+          fontFamily: 'monospace',
         }}
       >
         <p
           style={{
-            fontSize: 15,
-            color: '#6b7280',
-            textTransform: 'uppercase',
-            letterSpacing: '0.15em',
-            margin: '0 0 28px 0',
+            fontSize: 20,
+            color: '#ffb000',
+            margin: '0 0 24px 0',
           }}
         >
-          Mexico · UTC · Open to remote / contract (US)
+          {'> whoami'}
         </p>
         <h1
           style={{
-            fontSize: 80,
+            fontSize: 12,
             fontWeight: 700,
-            color: '#0d0d0d',
+            color: '#dfe3cf',
             lineHeight: 1.0,
             margin: '0 0 28px 0',
           }}
@@ -46,12 +44,21 @@ export default function OGImage() {
         <p
           style={{
             fontSize: 26,
-            color: '#6b7280',
-            margin: 0,
-            lineHeight: 1.4,
+            color: '#dfe3cf',
+            margin: '0 0 12px 0',
           }}
         >
-          Senior Frontend Engineer — React, TypeScript, Next.js
+          {'> role --current'}
+        </p>
+        <p
+          style={{
+            fontSize: 30,
+            fontWeight: 700,
+            color: '#ffb000',
+            margin: 0,
+          }}
+        >
+          Full-Stack Developer
         </p>
         <div
           style={{
@@ -65,13 +72,12 @@ export default function OGImage() {
         >
           <div
             style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#1a56db',
+              width: 10,
+              height: 10,
+              background: '#9fc93c',
             }}
           />
-          <span style={{ fontSize: 14, color: '#6b7280' }}>
+          <span style={{ fontSize: 16, color: '#838a6c' }}>
             jeffvaleriano@gmail.com
           </span>
         </div>
