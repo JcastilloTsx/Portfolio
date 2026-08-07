@@ -1,3 +1,4 @@
+import GrainField from '@/components/ui/GrainField'
 import Nav from '@/components/nav/Nav'
 import Hero from '@/components/hero/Hero'
 import Work from '@/components/work/Work'
@@ -24,6 +25,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <GrainField />
       <Nav />
       <main id="main-content">
         <Hero />

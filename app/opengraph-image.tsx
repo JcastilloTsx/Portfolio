@@ -24,7 +24,7 @@ export default function OGImage() {
         <p
           style={{
             fontSize: 20,
-            color: '#ffb000',
+            color: '#1f9d55',
             margin: '0 0 24px 0',
           }}
         >
@@ -54,7 +54,7 @@ export default function OGImage() {
           style={{
             fontSize: 30,
             fontWeight: 700,
-            color: '#ffb000',
+            color: '#1f9d55',
             margin: 0,
           }}
         >

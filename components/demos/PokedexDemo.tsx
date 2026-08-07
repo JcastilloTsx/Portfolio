@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
-const classicSprite = (id: number) => `${SPRITE_BASE}/versions/generation-i/red-blue/${id}.png`
 const animatedSprite = (id: number) => `${SPRITE_BASE}/versions/generation-v/black-white/animated/${id}.gif`
 const modernSprite = (id: number) => `${SPRITE_BASE}/${id}.png`
 
