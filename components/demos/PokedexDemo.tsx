@@ -1,30 +1,10 @@
-'use client'
+﻿'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
-const classicSprite = (id: number) => `${SPRITE_BASE}/versions/generation-i/red-blue/${id}.png`
 const animatedSprite = (id: number) => `${SPRITE_BASE}/versions/generation-v/black-white/animated/${id}.gif`
 const modernSprite = (id: number) => `${SPRITE_BASE}/${id}.png`
-
-const ROSTER: { id: number; name: string }[] = [
-  { id: 1, name: 'bulbasaur' },
-  { id: 3, name: 'venusaur' },
-  { id: 4, name: 'charmander' },
-  { id: 6, name: 'charizard' },
-  { id: 7, name: 'squirtle' },
-  { id: 9, name: 'blastoise' },
-  { id: 25, name: 'pikachu' },
-  { id: 39, name: 'jigglypuff' },
-  { id: 52, name: 'meowth' },
-  { id: 54, name: 'psyduck' },
-  { id: 66, name: 'machop' },
-  { id: 94, name: 'gengar' },
-  { id: 130, name: 'gyarados' },
-  { id: 133, name: 'eevee' },
-  { id: 143, name: 'snorlax' },
-  { id: 150, name: 'mewtwo' },
-]
 
 const TYPE_TONE: Record<string, string> = {
   fire: 'text-danger', fighting: 'text-danger', dragon: 'text-danger', poison: 'text-danger',
@@ -201,7 +181,78 @@ function PokemonModal({ id, name, onClose }: { id: number; name: string; onClose
 }
 
 export default function PokedexDemo() {
-  const [active, setActive] = useState<{ id: number; name: string } | null>(null)
+  const [pokemonList, setPokemonList] = useState<{ id: number; name: string; sprite: string }[]>([])
+  const [loadingList, setLoadingList] = useState(true)
+  const [listError, setListError] = useState(false)
+  const [active, setActive] = useState<{ id: number; name: string; trigger: HTMLButtonElement | null } | null>(null)
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoadingList(true)
+
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=16')
+      .then((res) => {
+        if (!res.ok) throw new Error('list fetch failed')
+        return res.json()
+      })
+      .then((data) => {
+        if (cancelled) return
+        const pokemon = (data?.results ?? []).map((item: { name: string; url: string }) => {
+          const segments = item.url.split('/').filter(Boolean)
+          const id = Number(segments[segments.length - 1])
+          return {
+            id,
+            name: item.name,
+            sprite: modernSprite(id),
+          }
+        })
+        setPokemonList(pokemon)
+        setListError(false)
+      })
+      .catch(() => {
+        if (!cancelled) setListError(true)
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingList(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const updateScrollButtons = useCallback(() => {
+    const track = trackRef.current
+    if (!track) return
+    setCanScrollLeft(track.scrollLeft > 0)
+    setCanScrollRight(track.scrollLeft + track.clientWidth < track.scrollWidth - 1)
+  }, [])
+
+  useEffect(() => {
+    updateScrollButtons()
+    const track = trackRef.current
+    if (!track) return
+    track.addEventListener('scroll', updateScrollButtons)
+    window.addEventListener('resize', updateScrollButtons)
+    return () => {
+      track.removeEventListener('scroll', updateScrollButtons)
+      window.removeEventListener('resize', updateScrollButtons)
+    }
+  }, [updateScrollButtons, pokemonList])
+
+  const scrollCards = (distance: number) => {
+    trackRef.current?.scrollBy({ left: distance, behavior: 'smooth' })
+  }
+
+  const closeModal = useCallback(() => {
+    setActive((current) => {
+      current?.trigger?.focus()
+      return null
+    })
+  }, [])
 
   return (
     <div className="border-2 border-line bg-bg p-5 sm:p-7">
@@ -210,40 +261,78 @@ export default function PokedexDemo() {
           <span className="text-accent">$</span> ./run pokedex.tsx --gen 1
         </p>
         <span className="border border-line px-2 py-0.5 font-body text-[10px] uppercase tracking-widest text-muted">
-          {ROSTER.length} entries
+          {pokemonList.length} entries
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {ROSTER.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setActive(p)}
-            className="group border-2 border-line bg-surface p-3 text-left transition-colors hover:border-accent"
-          >
-            <div className="mb-2 flex aspect-square items-center justify-center border border-line bg-bg p-2">
-              <img
-                src={classicSprite(p.id)}
-                alt={p.name}
-                width={56}
-                height={56}
-                style={{ imageRendering: 'pixelated' }}
-                className="grayscale transition-[filter] duration-150 group-hover:grayscale-0"
-                onError={(e) => {
-                  ;(e.target as HTMLImageElement).src = modernSprite(p.id)
-                }}
-              />
+      {loadingList ? (
+        <p className="p-8 text-center font-body text-sm text-muted">loading pokedex...</p>
+      ) : listError ? (
+        <p className="border border-accent px-4 py-3 font-body text-sm text-accent">
+          [WARN] failed to load pokedex — please try again later.
+        </p>
+      ) : (
+        <>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="font-body text-xs uppercase tracking-widest text-muted">browse pokedex →</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => scrollCards(-280)}
+                disabled={!canScrollLeft}
+                className="border border-line px-2 py-1 font-display text-base text-text transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+              >
+                {'<'}
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollCards(280)}
+                disabled={!canScrollRight}
+                className="border border-line px-2 py-1 font-display text-base text-text transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+              >
+                {'>'}
+              </button>
             </div>
-            <p className="font-body text-[10px] text-muted">{pokedexNumber(p.id)}</p>
-            <p className="truncate font-display text-base capitalize text-text">{p.name}</p>
-          </button>
-        ))}
-      </div>
+          </div>
 
-      {active && (
-        <PokemonModal id={active.id} name={active.name} onClose={() => setActive(null)} />
+          <div
+            ref={trackRef}
+            onWheel={(e) => {
+              if (!trackRef.current) return
+              e.preventDefault()
+              trackRef.current.scrollBy({ left: e.deltaY * 1.5, behavior: 'smooth' })
+            }}
+            className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth hide-scrollbar"
+            style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
+          >
+            {pokemonList.map((pokemon) => (
+              <div key={pokemon.id} className="min-w-[220px] max-w-[280px] shrink-0 snap-center">
+                <button
+                  type="button"
+                  onClick={(e) => setActive({ id: pokemon.id, name: pokemon.name, trigger: e.currentTarget })}
+                  className="group flex w-full flex-col gap-3 rounded border-2 border-line bg-surface p-4 text-left transition-colors hover:border-accent"
+                >
+                  <div className="mb-2 flex aspect-square items-center justify-center border border-line bg-bg p-2">
+                    <img
+                      src={pokemon.sprite}
+                      alt={pokemon.name}
+                      width={94}
+                      height={94}
+                      style={{ imageRendering: 'pixelated' }}
+                      className="transition-[filter] duration-150 group-hover:grayscale-0"
+                    />
+                  </div>
+                  <p className="font-body text-[10px] text-muted">{pokedexNumber(pokemon.id)}</p>
+                  <p className="truncate font-display text-base capitalize text-text">{pokemon.name}</p>
+                  <p className="mt-2 text-xs text-muted">click for details →</p>
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
+
+      {active && <PokemonModal id={active.id} name={active.name} onClose={closeModal} />}
     </div>
   )
 }

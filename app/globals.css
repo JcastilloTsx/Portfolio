@@ -9,7 +9,7 @@
   --color-surface: #f5f1e4;
   --color-text: #1b1b13;
   --color-muted: #6b6b52;
-  --color-accent: #8a4f00;
+  --color-accent: #1a5276;
   --color-olive: #3f5c1f;
   --color-danger: #b3261e;
   --color-border: rgba(27, 27, 19, 0.2);
@@ -22,7 +22,7 @@
   --color-surface: #12140f;
   --color-text: #dfe3cf;
   --color-muted: #838a6c;
-  --color-accent: #ffb000;
+  --color-accent: #1f9d55;
   --color-olive: #9fc93c;
   --color-danger: #ff6b5e;
   --color-border: rgba(223, 227, 207, 0.18);
@@ -187,6 +187,15 @@ body {
       transparent 1px,
       transparent 4px
     );
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
